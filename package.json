@@ -20,6 +20,7 @@
     "start": "ng serve",
     "build": "ng build",
     "dist": "ng build --configuration production angular-dual-listbox && cp README.md LICENSE ./dist/angular-dual-listbox/",
+    "dist-win": "ng build --configuration production angular-dual-listbox && copy .\\README.md .\\dist\\angular-dual-listbox\\ && copy .\\LICENSE .\\dist\\angular-dual-listbox\\ ",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"

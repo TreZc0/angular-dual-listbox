@@ -1,0 +1,48 @@
+{
+  "name": "angular-dual-listbox",
+  "description": "Angular dual listbox",
+  "version": "6.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/czeckd/angular-dual-listbox.git"
+  },
+  "bugs": {
+    "url": "https://github.com/czeckd/angular-dual-listbox/issues"
+  },
+  "author": "David Czeck",
+  "license": "MIT",
+  "keywords": [
+    "angular",
+    "listbox"
+  ],
+  "peerDependencies": {
+    "@angular/common": ">=10.0.0",
+    "@angular/core": ">=10.0.0"
+  },
+  "dependencies": {
+    "tslib": "^2.0.0"
+  },
+  "module": "fesm2015/angular-dual-listbox.mjs",
+  "es2020": "fesm2020/angular-dual-listbox.mjs",
+  "esm2020": "esm2020/angular-dual-listbox.mjs",
+  "fesm2020": "fesm2020/angular-dual-listbox.mjs",
+  "fesm2015": "fesm2015/angular-dual-listbox.mjs",
+  "typings": "angular-dual-listbox.d.ts",
+  "exports": {
+    "./package.json": {
+      "default": "./package.json"
+    },
+    ".": {
+      "types": "./angular-dual-listbox.d.ts",
+      "esm2020": "./esm2020/angular-dual-listbox.mjs",
+      "es2020": "./fesm2020/angular-dual-listbox.mjs",
+      "es2015": "./fesm2015/angular-dual-listbox.mjs",
+      "node": "./fesm2015/angular-dual-listbox.mjs",
+      "default": "./fesm2020/angular-dual-listbox.mjs"
+    }
+  },
+  "sideEffects": false,
+  "scripts": {
+    "prepublishOnly": "node --eval \"console.error('ERROR: Trying to publish a package that has been compiled by Ivy in full compilation mode. This is not allowed.\\nPlease delete and rebuild the package with Ivy partial compilation mode, before attempting to publish.\\n')\" && exit 1"
+  }
+}

@@ -1,0 +1,7 @@
+/*
+ * Public API Surface of angular-dual-listbox
+ */
+export * from './lib/basic-list';
+export * from './lib/dual-list.component';
+export * from './lib/angular-dual-listbox.module';
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicHVibGljLWFwaS5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uLy4uLy4uL3Byb2plY3RzL2FuZ3VsYXItZHVhbC1saXN0Ym94L3NyYy9wdWJsaWMtYXBpLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBOztHQUVHO0FBRUgsY0FBYyxrQkFBa0IsQ0FBQztBQUNqQyxjQUFjLDJCQUEyQixDQUFDO0FBQzFDLGNBQWMsbUNBQW1DLENBQUMiLCJzb3VyY2VzQ29udGVudCI6WyIvKlxyXG4gKiBQdWJsaWMgQVBJIFN1cmZhY2Ugb2YgYW5ndWxhci1kdWFsLWxpc3Rib3hcclxuICovXHJcblxyXG5leHBvcnQgKiBmcm9tICcuL2xpYi9iYXNpYy1saXN0JztcclxuZXhwb3J0ICogZnJvbSAnLi9saWIvZHVhbC1saXN0LmNvbXBvbmVudCc7XHJcbmV4cG9ydCAqIGZyb20gJy4vbGliL2FuZ3VsYXItZHVhbC1saXN0Ym94Lm1vZHVsZSc7XHJcbiJdfQ==
