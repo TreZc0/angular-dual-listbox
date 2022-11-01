@@ -23,7 +23,8 @@
     "dist-win": "ng build --configuration production angular-dual-listbox && copy .\\README.md .\\dist\\angular-dual-listbox\\ && copy .\\LICENSE .\\dist\\angular-dual-listbox\\ ",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "prebuild": "ng build --configuration production angular-dual-listbox"
   },
   "private": true,
   "dependencies": {
