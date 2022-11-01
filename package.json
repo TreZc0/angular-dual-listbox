@@ -1,5 +1,5 @@
 {
-  "name": "dual-listbox",
+  "name": "angular-dual-listbox",
   "description": "Angular dual listbox",
   "version": "6.5.0",
   "repository": {
@@ -24,7 +24,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "prebuild": "ng build --configuration production angular-dual-listbox"
+    "prepare": "ng build --configuration production angular-dual-listbox"
   },
   "private": true,
   "dependencies": {
