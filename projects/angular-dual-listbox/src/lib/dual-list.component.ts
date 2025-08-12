@@ -1,5 +1,7 @@
-import { Component, DoCheck, EventEmitter, Input, IterableDiffers, OnChanges,
-	Output, SimpleChange } from '@angular/core';
+import { Component, DoCheck, EventEmitter, Input, OnChanges,
+	Output, SimpleChange, ChangeDetectorRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 import { BasicList } from './basic-list';
 
@@ -9,6 +11,8 @@ var nextId = 0;
 
 @Component({
 	selector: 'dual-list',
+	standalone: true,
+	imports: [CommonModule, FormsModule],
 	templateUrl: './dual-list.component.html',
 	styleUrls: [ './dual-list.component.css' ]
 })
@@ -46,12 +50,12 @@ export class DualListComponent implements DoCheck, OnChanges {
 	available: BasicList;
 	confirmed: BasicList;
 
-	sourceDiffer: any;
-	destinationDiffer: any;
+	private previousSource: Array<any> = [];
+	private previousDestination: Array<any> = [];
 
 	private sorter = (a: any, b: any) => { return (a._name < b._name) ? -1 : ((a._name > b._name) ? 1 : 0); };
 
-	constructor(private differs: IterableDiffers) {
+	constructor(private cdr: ChangeDetectorRef) {
 		this.available = new BasicList(DualListComponent.AVAILABLE_LIST_NAME);
 		this.confirmed = new BasicList(DualListComponent.CONFIRMED_LIST_NAME);
 	}
@@ -123,84 +127,123 @@ export class DualListComponent implements DoCheck, OnChanges {
 	}
 
 	buildAvailable(source: Array<any>): boolean {
-		const sourceChanges = this.sourceDiffer.diff(source);
-		if (sourceChanges) {
-			sourceChanges.forEachRemovedItem((r: any) => {
-				const idx = this.findItemIndex(this.available.list, r.item, this.key);
-				if (idx !== -1) {
-					this.available.list.splice(idx, 1);
-				}
-			});
-
-			sourceChanges.forEachAddedItem((r: any) => {
-				// Do not add duplicates even if source has duplicates.
-				if (this.findItemIndex(this.available.list, r.item, this.key) === -1) {
-					this.available.list.push( { _id: this.makeId(r.item), _name: this.makeName(r.item) });
-				}
-			});
-
-			if (this.compare !== undefined) {
-				this.available.list.sort(this.compare);
-			}
-			this.available.sift = this.available.list;
-
-			return true;
+		// Check if source has actually changed
+		if (this.arraysEqual(this.previousSource, source)) {
+			return false;
 		}
-		return false;
+		
+		this.previousSource = [...source];
+		
+		// Find items to remove (items in available.list that are no longer in source)
+		const itemsToRemove = this.available.list.filter(availableItem => {
+			return !source.some(sourceItem => this.makeId(sourceItem) === availableItem._id);
+		});
+		
+		// Remove items that are no longer in source
+		itemsToRemove.forEach(item => {
+			const idx = this.available.list.indexOf(item);
+			if (idx !== -1) {
+				this.available.list.splice(idx, 1);
+			}
+		});
+
+		// Add new items from source
+		source.forEach(sourceItem => {
+			const sourceId = this.makeId(sourceItem);
+			const exists = this.available.list.some(availableItem => availableItem._id === sourceId);
+			
+			if (!exists) {
+				this.available.list.push({ 
+					_id: sourceId, 
+					_name: this.makeName(sourceItem) 
+				});
+			}
+		});
+
+		if (this.compare !== undefined) {
+			this.available.list.sort(this.compare);
+		}
+		this.available.sift = this.available.list;
+
+		return true;
 	}
 
 	buildConfirmed(destination: Array<any>): boolean {
-		let moved = false;
-		const destChanges = this.destinationDiffer.diff(destination);
-		if (destChanges) {
-			destChanges.forEachRemovedItem((r: any) => {
-				const idx = this.findItemIndex(this.confirmed.list, r.item, this.key);
-				if (idx !== -1) {
-					if (!this.isItemSelected(this.confirmed.pick, this.confirmed.list[idx])) {
-						this.selectItem(this.confirmed.pick, this.confirmed.list[idx]);
-					}
-					this.moveItem(this.confirmed, this.available, this.confirmed.list[idx], false);
-					moved = true;
-				}
-			});
-
-			destChanges.forEachAddedItem((r: any) => {
-				const idx = this.findItemIndex(this.available.list, r.item, this.key);
-				if (idx !== -1) {
-					if (!this.isItemSelected(this.available.pick, this.available.list[idx])) {
-						this.selectItem(this.available.pick, this.available.list[idx]);
-					}
-					this.moveItem(this.available, this.confirmed, this.available.list[idx], false);
-					moved = true;
-				}
-			});
-
-			if (this.compare !== undefined) {
-				this.confirmed.list.sort(this.compare);
-			}
-			this.confirmed.sift = this.confirmed.list;
-
-			if (moved) {
-				this.trueUp();
-			}
-			return true;
+		// Check if destination has actually changed
+		if (this.arraysEqual(this.previousDestination, destination)) {
+			return false;
 		}
-		return false;
+		
+		this.previousDestination = [...destination];
+		
+		let moved = false;
+		
+		// Find items to remove (items in confirmed.list that are no longer in destination)
+		const itemsToRemove = this.confirmed.list.filter(confirmedItem => {
+			return !destination.some(destItem => this.makeId(destItem) === confirmedItem._id);
+		});
+		
+		// Remove items and move them back to available
+		itemsToRemove.forEach(item => {
+			const idx = this.confirmed.list.indexOf(item);
+			if (idx !== -1) {
+				this.confirmed.list.splice(idx, 1);
+				// Move back to available list
+				this.available.list.push(item);
+				moved = true;
+			}
+		});
+
+		// Add new items from destination
+		destination.forEach(destItem => {
+			const destId = this.makeId(destItem);
+			const exists = this.confirmed.list.some(confirmedItem => confirmedItem._id === destId);
+			
+			if (!exists) {
+				// Find the corresponding item in available list
+				const availableItem = this.available.list.find(avail => avail._id === destId);
+				if (availableItem) {
+					this.confirmed.list.push(availableItem);
+					// Remove from available list
+					const availableIdx = this.available.list.indexOf(availableItem);
+					if (availableIdx !== -1) {
+						this.available.list.splice(availableIdx, 1);
+					}
+					moved = true;
+				}
+			}
+		});
+
+		if (this.compare !== undefined) {
+			this.confirmed.list.sort(this.compare);
+		}
+		this.confirmed.sift = this.confirmed.list;
+
+		if (moved) {
+			this.trueUp();
+		}
+		return true;
+	}
+
+	private arraysEqual(a: Array<any>, b: Array<any>): boolean {
+		if (a === b) return true;
+		if (a == null || b == null) return false;
+		if (a.length !== b.length) return false;
+		
+		for (let i = 0; i < a.length; i++) {
+			if (a[i] !== b[i]) return false;
+		}
+		return true;
 	}
 
 	updatedSource() {
 		this.available.list.length = 0;
 		this.available.pick.length = 0;
-
-		if (this.source !== undefined) {
-			this.sourceDiffer = this.differs.find(this.source).create(null);
-		}
+		this.previousSource = [];
 	}
 
 	updatedDestination() {
-		if (this.destination !== undefined) {
-			this.destinationDiffer = this.differs.find(this.destination).create(null);
-		}
+		this.previousDestination = [];
 	}
 
 	direction() {

@@ -1,9 +1,13 @@
 import { Component, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
-import { DualListComponent } from 'angular-dual-listbox';
+import { DualListComponent } from '../../projects/angular-dual-listbox/src/lib/dual-list.component';
 
 @Component({
 	selector: 'app-demo',
+	standalone: true,
+	imports: [CommonModule, FormsModule, DualListComponent],
 	styles: [ 'form { margin-top: 15px; }', '.checkbox { margin-top: inherit; }', 'ul.nav-tabs { cursor: pointer; }' ],
 	template: `
 <div class="container-fluid">
