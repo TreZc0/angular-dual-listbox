@@ -4,12 +4,12 @@
   "version": "8.0.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/czeckd/angular-dual-listbox.git"
+    "url": "https://github.com/trezc0/angular-dual-listbox.git"
   },
   "bugs": {
-    "url": "https://github.com/czeckd/angular-dual-listbox/issues"
+    "url": "https://github.com/trezc0/angular-dual-listbox/issues"
   },
-  "author": "TreZc0_",
+  "author": "TreZc0_ <trezc0@gmx.de>",
   "license": "MIT",
   "keywords": [
     "angular",
