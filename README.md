@@ -15,18 +15,6 @@ The component supports multiple select options from the list, programatic settin
 $ npm i @trezc0/zsr-dual-listbox --save
 ```
 
-## Integration
-The **zsr-dual-listbox** should work as-is with webpack/angular-cli. Just add the ``AngularDualListBoxModule``:
-```typescript
-import { AngularDualListBoxModule } from 'zsr-dual-listbox';
-
-@NgModule({
-    imports: [ AngularDualListBoxModule ],
-    ...
-})
-export class AppModule {}
-```
-
 ## Usage
 Basic usage is:
 ```html

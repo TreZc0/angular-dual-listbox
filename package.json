@@ -1,7 +1,7 @@
 {
   "name": "zsr-dual-listbox",
   "description": "Angular dual listbox",
-  "version": "9.0.0",
+  "version": "9.0.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/trezc0/angular-dual-listbox.git"
